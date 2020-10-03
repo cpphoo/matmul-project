@@ -1,5 +1,5 @@
 # Versions to build
-BUILDS=mine basic blocked f2c blas
+BUILDS=mine basic blocked f2c blas blocked_LO_jik blocked_LO_jki blocked_LO_ikj blocked_LO_kij blocked_LO_kji
 
 # C and Fortran compilers
 CC=gcc
