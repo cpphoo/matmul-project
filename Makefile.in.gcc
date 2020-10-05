@@ -1,5 +1,5 @@
 # Versions to build
-BUILDS=mine basic blocked f2c blas blocked_LO_jik blocked_LO_jki blocked_LO_ikj blocked_LO_kij blocked_LO_kji blocked_copy blocked_avx blocked_naive_avx cond rec_avx rec_unroll blocked_avx_unroll
+BUILDS=mine basic blocked f2c blas blocked_LO_jik blocked_LO_jki blocked_LO_ikj blocked_LO_kij blocked_LO_kji blocked_copy blocked_avx blocked_naive_avx cond rec_avx rec_unroll blocked_avx_unroll rec_unroll_v2
 
 # C and Fortran compilers
 CC=gcc
