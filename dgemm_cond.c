@@ -127,6 +127,7 @@ void block_matrix_multiply(const int dim, const double *A, const double *B, doub
 /*
  * TODO 1: Try different block sizes (not necessarily square) for A, B and C to increase L1/L2 cache hits.
  * TODO 2: Transpose A/B to row major.
+ * TODO 3: Loop unrolling.
  */
 void square_dgemm(const int dim, const double *A, const double *B, double *C)
 {
