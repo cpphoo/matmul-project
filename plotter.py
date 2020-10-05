@@ -29,13 +29,18 @@ def main(args):
     "Show plot of timing runs (non-interactive)"
     make_plot(args)
     lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    plt.show()
-    plt.savefig('timing.pdf', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
+    if not args.no_show:
+        plt.show()
+    plt.savefig(args.save_file, bbox_extra_artists=(lgd,), bbox_inches='tight')
     
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--csv_dir', type=str, default='', help='directory that has the csv files')
     parser.add_argument('--suffix', type=str, nargs='+', help='prefix for the csv files')
+    parser.add_argument('--save_file', type=str, default='timing.pdf',
+                        help='filename for the plot')
+    parser.add_argument('--no_show', action='store_true', help='whether to show the plot or not')
     args = parser.parse_args()
     main(args)

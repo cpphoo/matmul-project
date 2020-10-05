@@ -45,7 +45,7 @@ void AVX_matrix_multiply(double *restrict A, double *restrict B, double *restric
 {
     int i, j, k;
     __m256d c[8], left[2], right[4];
-
+    
 #pragma GCC unroll 2
     for (i = 0; i < MM; i += 8)
     {
@@ -108,9 +108,9 @@ void block_matrix_multiply(const int dim, const double *A, const double *B, doub
     int dim_i, dim_j, dim_k;
     for (i = 0; i < dim; i += BLOCK_M)
     {
-        dim_i = min(BLOCK_M, (dim - i));
-#pragma GCC ivdep
-#pragma GCC unroll 2
+        dim_i = min(BLOCK_M, (dim - i)); 
+        #pragma GCC ivdep
+        #pragma GCC unroll 2
         for (j = 0; j < dim; j += BLOCK_N)
         {
             dim_j = min(BLOCK_N, (dim - j));

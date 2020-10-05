@@ -38,9 +38,11 @@ void AVX_matrix_BLOCK_Multiply(double* restrict A, double* restrict B, double* r
     int i, j, k;
     __m256d c[8], left[2], right[4];
     #pragma GCC unroll 2
-    for (j = 0; j < NN; j+=4) {
+    for (i = 0; i < MM; i += 8)
+    {
         #pragma GCC unroll 2
-        for (i = 0; i < MM; i+=8) {
+        for (j = 0; j < NN; j += 4)
+        {
             c[0] = _mm256_load_pd(&C[i+j*BLOCK_M]);
             c[1] = _mm256_load_pd(&C[i+(j+1)*BLOCK_M]);
             c[2] = _mm256_load_pd(&C[i+(j+2)*BLOCK_M]);
@@ -94,12 +96,15 @@ void square_dgemm(const int dim, const double *A, const double *B, double *C)
     double* subC = (double*) _mm_malloc(BLOCK_M * BLOCK_N * sizeof(double), 64);
     int i, j, k;
     int dim_i, dim_j, dim_k;
-    for (j = 0; j < dim; j += BLOCK_N) {
-        dim_j = min (BLOCK_N, (dim-j));
+    for (i = 0; i < dim; i += BLOCK_M)
+    {
+        dim_i = min(BLOCK_M, (dim - i));
+        
         #pragma GCC ivdep
         #pragma GCC unroll 2
-        for (i = 0; i < dim; i += BLOCK_M) {
-            dim_i = min (BLOCK_M, (dim-i));
+        for (j = 0; j < dim; j += BLOCK_N)
+        {
+            dim_j = min(BLOCK_N, (dim - j));
             matrix_copy_aligned(subC, &C[i + j * dim], BLOCK_M, BLOCK_N, dim, dim, dim_i, dim_j, 0);
             for (k = 0; k < dim; k += BLOCK_K)
             {

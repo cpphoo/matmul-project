@@ -51,17 +51,20 @@ void square_dgemm(const int N, const double *A, const double *B, double *C)
     double* subB = (double*) _mm_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double), 64);
     double* subC = (double*) _mm_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double), 64);
     int i, j, k;
-    for (j = 0; j < N; j += BLOCK_SIZE) {
-        int dim_j = min (BLOCK_SIZE, (N-j));
+   
+        
+    for (i = 0; i < N; i += BLOCK_SIZE) {
+        int dim_i = min (BLOCK_SIZE, (N-i));
         #pragma GCC ivdep
-        for (i = 0; i < N; i += BLOCK_SIZE) {
-            int dim_i = min (BLOCK_SIZE, (N-i));
+        for (j = 0; j < N; j += BLOCK_SIZE)
+        {
+            int dim_j = min(BLOCK_SIZE, (N - j));
             matrix_copy_aligned(subC, &C[i + j * N], BLOCK_SIZE, N, dim_i, dim_j, BLOCK_SIZE);
             for (k = 0; k < N; k += BLOCK_SIZE)
             {
-                int dim_k = min (BLOCK_SIZE, (N-k));
-                matrix_copy_aligned(subA,&A[i + k * N], BLOCK_SIZE, N, dim_i, dim_k, BLOCK_SIZE);
-                matrix_copy_aligned(subB,&B[k + j * N], BLOCK_SIZE, N, dim_k, dim_j, BLOCK_SIZE);
+                int dim_k = min(BLOCK_SIZE, (N - k));
+                matrix_copy_aligned(subA, &A[i + k * N], BLOCK_SIZE, N, dim_i, dim_k, BLOCK_SIZE);
+                matrix_copy_aligned(subB, &B[k + j * N], BLOCK_SIZE, N, dim_k, dim_j, BLOCK_SIZE);
                 naive_matrix_block_multiply(subA, subB, subC, BLOCK_SIZE, dim_i, dim_j, dim_k);
             }
             matrix_copy_aligned(&C[i + j * N], subC, N, BLOCK_SIZE, dim_i, dim_j, 0);
