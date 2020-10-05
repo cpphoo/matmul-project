@@ -2,14 +2,14 @@ const char *dgemm_desc = "My awesome dgemm.";
 #include <immintrin.h>
 #include <string.h>
 
+int block_m = 64;
+int block_n = 64;
+int block_k = 256;
+
 /* Block sizes */
 #define BLOCK_M block_m
 #define BLOCK_N block_n
 #define BLOCK_K block_k
-
-int block_m = 64;
-int block_n = 64;
-int block_k = 256;
 
 #define SMALL_MATRIX_DIM 150
 
@@ -99,8 +99,21 @@ void AVX_matrix_multiply(double *restrict A, double *restrict B, double *restric
  * where C is MM-by-NN, A is MM-by-KK, and B is KK-by-NN
  * using sub-blocking plus AVX.
  */
-void block_matrix_multiply(const int dim, const double *A, const double *B, double *C)
+void square_dgemm(const int dim, const double *A, const double *B, double *C)
 {
+    if (dim < SMALL_MATRIX_DIM)
+    {
+        BLOCK_M = 32;
+        BLOCK_N = 32;
+        BLOCK_K = 32;
+    }
+    else
+    {
+        BLOCK_M = 64;
+        BLOCK_N = 64;
+        BLOCK_K = 256;
+    }
+
     double *subA = (double *)_mm_malloc(BLOCK_M * BLOCK_K * sizeof(double), 64);
     double *subB = (double *)_mm_malloc(BLOCK_K * BLOCK_N * sizeof(double), 64);
     double *subC = (double *)_mm_malloc(BLOCK_M * BLOCK_N * sizeof(double), 64);
@@ -135,13 +148,18 @@ void block_matrix_multiply(const int dim, const double *A, const double *B, doub
  * TODO 1: Try different block sizes (not necessarily square) for A, B and C to increase L1/L2 cache hits.
  * TODO 2: Transpose A/B to row major.
  */
-void square_dgemm(const int dim, const double *A, const double *B, double *C)
-{
-    if (dim < SMALL_MATRIX_DIM)
-    {
-        BLOCK_M = 32;
-        BLOCK_N = 32;
-        BLOCK_K = 32;
-    }
-    block_matrix_multiply(dim, A, B, C);
-}
+// void square_dgemm(const int dim, const double *A, const double *B, double *C)
+// {
+//     if (dim < SMALL_MATRIX_DIM)
+//     {
+//         BLOCK_M = 32;
+//         BLOCK_N = 32;
+//         BLOCK_K = 32;
+//     }
+//     else {
+//         BLOCK_M = 64;
+//         BLOCK_N = 64;
+//         BLOCK_K = 256;
+//     }
+//     block_matrix_multiply(dim, A, B, C);
+// }

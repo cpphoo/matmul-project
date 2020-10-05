@@ -19,6 +19,7 @@ void matrix_copy_aligned(double* restrict destination, const double* restrict so
     if (n_row < block_size || n_col < block_size) {
         memset(destination, 0, block_size * block_size * sizeof(double));
     }
+    
     for (int j = 0; j < n_col; ++j) {
         memcpy(&destination[j*dest_size], &source[j*src_size], n_row * sizeof(double));
     }
